@@ -411,16 +411,22 @@ This warning will now show again after you press OK.</value>
     <value>log in</value>
   </data>
   <data name="Login_PasswordLabel" xml:space="preserve">
-    <value>Google password</value>
+    <value>Google password or app-specific password</value>
   </data>
   <data name="Login_PrivacyPolicy" xml:space="preserve">
-    <value>Gchat Privacy Policy</value>
+    <value>Privacy Policy</value>
   </data>
   <data name="Login_Progress" xml:space="preserve">
     <value>Logging in...</value>
   </data>
+  <data name="Login_Support" xml:space="preserve">
+    <value>Support</value>
+  </data>
   <data name="Login_Title" xml:space="preserve">
     <value>GCHAT</value>
+  </data>
+  <data name="Login_TwoStepVerification" xml:space="preserve">
+    <value>Using 2-Step Verification?</value>
   </data>
   <data name="Login_UsernameLabel" xml:space="preserve">
     <value>Google username or email</value>
