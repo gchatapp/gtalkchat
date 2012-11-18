@@ -27,7 +27,7 @@ namespace Gchat {
         public IsolatedStorageSettings Settings { get; set; }
 
         public GoogleTalkHelper GtalkHelper { get; set; }
-        
+
         private Roster roster = new Roster();
         public Roster Roster { get { return roster; } }
 
@@ -40,7 +40,7 @@ namespace Gchat {
         public Gchat.Pages.ContactList ContactList { get; set; }
 
         public new static App Current {
-            get { return (App) Application.Current; }
+            get { return (App)Application.Current; }
         }
 
         /// <summary>
@@ -144,31 +144,35 @@ namespace Gchat {
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e) {
-            if (Settings == null) Settings = IsolatedStorageSettings.ApplicationSettings;
-            if (PushHelper == null) PushHelper = new PushHelper();
-            if (GtalkClient == null) GtalkClient = new GoogleTalk();
-            
-            if (RecentContacts == null) {
-                if (!Settings.Contains("recent")) {
-                    Settings["recent"] = RecentContacts = new ObservableCollection<Contact>();
+            if (!e.IsApplicationInstancePreserved) {
+
+                if (Settings == null) Settings = IsolatedStorageSettings.ApplicationSettings;
+                if (PushHelper == null) PushHelper = new PushHelper();
+                if (GtalkClient == null) GtalkClient = new GoogleTalk();
+
+                if (RecentContacts == null) {
+                    if (!Settings.Contains("recent")) {
+                        Settings["recent"] = RecentContacts = new ObservableCollection<Contact>();
+                    }
+                    RecentContacts = Settings["recent"] as ObservableCollection<Contact>;
                 }
-                RecentContacts = Settings["recent"] as ObservableCollection<Contact>;
+
+                if (!Settings.Contains("chatlog")) {
+                    Settings["chatlog"] = new Dictionary<string, List<Message>>();
+                }
+
+                if (!Settings.Contains("unread")) {
+                    Settings["unread"] = new Dictionary<string, int>();
+                }
+
+                if (GtalkHelper == null) GtalkHelper = new GoogleTalkHelper();
+
+                InitAnalytics();
+
+                PushHelper.RegisterPushNotifications();
             }
 
-            if (!Settings.Contains("chatlog")) {
-                Settings["chatlog"] = new Dictionary<string, List<Message>>();
-            }
-
-            if (!Settings.Contains("unread")) {
-                Settings["unread"] = new Dictionary<string, int>();
-            }
-
-            if (GtalkHelper == null) GtalkHelper = new GoogleTalkHelper();
             Roster.Load();
-
-            InitAnalytics();
-            
-            PushHelper.RegisterPushNotifications();
         }
 
         // Code to execute when the application is deactivated (sent to background)
@@ -233,10 +237,9 @@ namespace Gchat {
         // Do not add any additional code to this method
         private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e) {
             // Set the root visual to allow the application to render
-            // ReSharper disable RedundantCheckBeforeAssignment
-            if (RootVisual != RootFrame)
-            // ReSharper restore RedundantCheckBeforeAssignment
+            if (RootVisual != RootFrame) {
                 RootVisual = RootFrame;
+            }
 
             // Remove this handler since it is no longer needed
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
