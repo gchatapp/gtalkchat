@@ -284,8 +284,12 @@ namespace Gchat.Pages {
                     }
 
                     MessageText.Text = "";
-                    this.Focus();
-                    MessageText.Focus();
+                    // Refocus text box to reset text suggestions. 
+                    // Only refocus is it's currently focused.
+                    if (System.Windows.Input.FocusManager.GetFocusedElement() == MessageText) {
+                        this.Focus();
+                        MessageText.Focus();
+                    }
 
                     FlurryWP7SDK.Api.LogEvent("Chat - Chat sent");
                 }), error => {
